@@ -9,7 +9,6 @@ sns.set_style('whitegrid')
 # df.plot()
 # plt.show()
 # print(df.head())
-df = df[['Close']]
 print(df)
 df.to_csv('005930_test.csv')
 # print(len(df))

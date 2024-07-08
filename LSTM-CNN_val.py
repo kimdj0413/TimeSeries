@@ -6,10 +6,11 @@ import torch
 from torch import nn, optim
 from datetime import datetime, timedelta
 
-for i in range(0,30):
-  realDf = pd.read_csv('005930_test.csv')
-  df = realDf[['Date','Close']]
+for i in range(0,9):
+  df = pd.read_csv('005930_test.csv')
+  df = df[['Date','Close']]
   df = df.tail(11)
+  print(df)
   df.set_index('Date', inplace=True)
   def createSequence(data, seqLength):
     xList = []
@@ -129,10 +130,8 @@ for i in range(0,30):
   newDate = datetime.strptime(lastDate, '%Y-%m-%d')
   newDate = newDate + timedelta(days=1)
   newDate = newDate.strftime('%Y-%m-%d')
-  new_row = {'Date': newDate, 'Close': preds}
-  realDf = realDf.append(new_row, ignore_index=True)
-  # new_row = pd.DataFrame({'Close': preds}, index=[newDate])
-  # new_row.index.name = 'Date'
-  # realDf = pd.concat([realDf, new_row])
-  realDf.to_csv('005930_test.csv')
-  print(realDf)
+  new_row = pd.DataFrame({'Close': preds}, index=[newDate])
+  new_row.index.name = 'Date'
+  df = pd.concat([df, new_row])
+  df.to_csv('005930_test.csv')
+print(df)
