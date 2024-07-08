@@ -20,15 +20,15 @@ def createSequence(data, seqLength):
     xList.append(x)
     yList.append(y)
   return np.array(xList), np.array(yList)
-
-trainSize = int(977*0.8)
+print(len(closeDf))
+trainSize = int(3452*0.8)
 
 seqLength = 10
 X, y = createSequence(closeDf, seqLength)
 # print(X.shape, y.shape)
 X_train, y_train = X[:trainSize], y[:trainSize]
-X_val, y_val = X[trainSize:trainSize+98], y[trainSize:trainSize+98] # 98 = 977*0.2/2+1
-X_test, y_test = X[trainSize+98:], y[trainSize+98:]
+X_val, y_val = X[trainSize:trainSize+346], y[trainSize:trainSize+346] # 98 = 977*0.2/2+1
+X_test, y_test = X[trainSize+346:], y[trainSize+346:]
 # print(len(X_test),len(y_test))
 
 # print(X_train.shape, X_val.shape, X_test.shape)
@@ -132,28 +132,28 @@ def trainModel(model, train_data, train_labels, val_data=None, val_labels=None, 
     
   return model, trainHist, valHist
   
-# model = FinancePredict(
-#     nFeature=1,
-#     nHidden=4,
-#     seqLen=seqLength,
-#     nLayers=1
-# )
-# model, trainHist, valHist = trainModel(
-#     model,
-#     X_train,
-#     y_train,
-#     X_val,
-#     y_val,
-#     num_epochs=100,
-#     verbose=10,
-#     patience=50
-# )
-# torch.save(model, 'LstmCnnModel.pth')
+model = FinancePredict(
+    nFeature=1,
+    nHidden=4,
+    seqLen=seqLength,
+    nLayers=1
+)
+model, trainHist, valHist = trainModel(
+    model,
+    X_train,
+    y_train,
+    X_val,
+    y_val,
+    num_epochs=100,
+    verbose=10,
+    patience=50
+)
+torch.save(model, 'LstmCnnModel.pth')
 model = torch.load('LstmCnnModel.pth')
-# plt.plot(trainHist, label="Training loss")
-# plt.plot(valHist, label="Val loss")
-# plt.legend()
-# plt.show()
+plt.plot(trainHist, label="Training loss")
+plt.plot(valHist, label="Val loss")
+plt.legend()
+plt.show()
 
 pred_dataset = X_test
 
@@ -166,7 +166,7 @@ with torch.no_grad():
         preds.append(pred)
 def MAE(true, pred):
     return np.mean(np.abs(true-pred))
-# print(MAE(np.array(y_test)*maxVal, np.array(preds)*maxVal))
+print(MAE(np.array(y_test)*maxVal, np.array(preds)*maxVal))
 
 dates = closeDf.index[-len(y_test):]
 tests = np.array(y_test)*maxVal
@@ -180,14 +180,16 @@ df = pd.DataFrame({
 df['Predicted'] = df['Predicted'].shift(-1)
 df['Predicted'].iloc[-1] = np.nan
 
+x = np.arange(len(df['Date']))  # 날짜를 숫자로 변환
+
 plt.figure(figsize=(12, 6))
-plt.plot(df['Date'], df['Actual'], label='Actual')
-plt.plot(df['Date'], df['Predicted'], label='Predicted')
+plt.bar(x - 0.2, df['Actual'], width=0.4, label='Actual', alpha=0.7)
+plt.bar(x + 0.2, df['Predicted'], width=0.4, label='Predicted', alpha=0.7)
 plt.title('Actual vs Predicted')
 plt.xlabel('Date')
 plt.ylabel('Values')
 plt.legend()
-plt.xticks(rotation=45)
+plt.xticks(x, df['Date'], rotation=45)
 plt.show()
 
 # plt.plot(closeDf.index[-len(y_test):], np.array(y_test) * maxVal, label='True')
