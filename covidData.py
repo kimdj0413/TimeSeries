@@ -18,7 +18,7 @@ rcParams['figure.figsize'] = 12, 8
 sns.set_theme(style='whitegrid', palette='muted', font_scale=1.2)
 
 plt.plot(korea)
-plt.show()
+# plt.show()
 
 daily_case = korea.diff().fillna(korea.iloc[0]).astype('int') # diff = 전 행과의 차(일일 확진자 수)
 # print(daily_case)
@@ -39,7 +39,8 @@ def create_sequences(data, seq_length):
 
 seq_length = 5
 X, y = create_sequences(daily_case, seq_length)
-# print(X.shape, y.shape)
+print(X.shape, y.shape)
+
 train_size = int(327*0.8)
 # print(train_size)
 
@@ -47,9 +48,9 @@ X_train, y_train = X[:train_size], y[:train_size]
 X_val, y_val = X[train_size:train_size+33], y[train_size:train_size+33]
 X_test, y_test = X[train_size+33:], y[train_size+33:]
 
-# print(X_train.shape, X_val.shape, X_test.shape)
-# print(y_train.shape, y_val.shape, y_test.shape)
-
+print(X_train.shape, X_val.shape, X_test.shape)
+print(y_train.shape, y_val.shape, y_test.shape)
+"""
 MIN = X_train.min()
 MAX = X_train.max()
 # print(MIN, MAX)
@@ -75,3 +76,4 @@ X_val = make_Tensor(X_val)
 y_val = make_Tensor(y_val)
 X_test = make_Tensor(X_test)
 y_test = make_Tensor(y_test)
+"""

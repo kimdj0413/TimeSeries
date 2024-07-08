@@ -21,9 +21,11 @@ torch.manual_seed(RANDOM_SEED)
 confirmed = pd.read_csv('./COVIDTimeSeries/time_series_covid19_confirmed_global.csv')
 confirmed[confirmed['Country/Region']=='Korea, South']
 korea = confirmed[confirmed['Country/Region']=='Korea, South'].iloc[:,4:].T
+
 korea.index = pd.to_datetime(korea.index)
 daily_cases = korea.diff().fillna(korea.iloc[0]).astype('int')
 print(daily_cases)
+
 def create_sequences(data, seq_length):
     xs = []
     ys = []
@@ -43,7 +45,7 @@ X_val, y_val = X[train_size:train_size+33], y[train_size:train_size+33]
 X_test, y_test = X[train_size+33:], y[train_size+33:]
 print(X_test)
 print(y_test)
-"""
+
 MIN = X_train.min()
 MAX = X_train.max()
 
